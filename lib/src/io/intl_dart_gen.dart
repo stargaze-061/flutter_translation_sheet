@@ -6,7 +6,7 @@ const _selectorMandatory = 'other';
 const _kPluralSearch = '.plural:';
 const _kSelectorSearch = '.selector:';
 const _errorStringInvalidPlural =
-    '''plural tokens must declare the variable they use, in the form of "plural:variable:". Sample:
+'''plural tokens must declare the variable they use, in the form of "plural:variable:". Sample:
 counter:
   plural:count:
     zero: no messages
@@ -15,7 +15,7 @@ counter:
           ''';
 
 const _errorStringInvalidSelector =
-    '''selector tokens must declare the variable they use, in the form of "selector:variable:". Sample:
+'''selector tokens must declare the variable they use, in the form of "selector:variable:". Sample:
 welcomeUser:
   selector:role:
     admin: Hello admin!
@@ -114,11 +114,11 @@ void buildArb(Map<String, Map<String, String>> map) {
 /// generate the metadata key directly from the message if it contains
 /// placeholders.
 void _addSimpleVarsMetadata(
-  String originalKey,
-  String targetKey,
-  String value,
-  Map<String, dynamic> output,
-) {
+    String originalKey,
+    String targetKey,
+    String value,
+    Map<String, dynamic> output,
+    ) {
   var metaKey = '@$targetKey';
   if (varsByKeys.containsKey(originalKey)) {
     output[metaKey] = <String, dynamic>{
@@ -230,15 +230,15 @@ String _saveVarsFromString(String value, Map saveTo) {
   // trace("So the::: ", textVars,  ' -- ', value, '-- saveInd:', saveTo);
   var cleanedValue = value;
   if (textVars.isNotEmpty) {
-    // trace("CLeaned pre:: ", cleanedValue, '===', textVars);
-    textVars.forEach((key, value) {
-      /// take complex {vars:type:format(params)} and replace the value with the simple var name.
-      if (value is Map && value.containsKey('_text')) {
-        cleanedValue = cleanedValue.replaceAll(value['_text'], key);
-        value.remove('_text');
+    textVars.forEach((key, val) {
+      if (val is Map && val.containsKey('_text')) {
+        cleanedValue = cleanedValue.replaceAll(val['_text'], key);
+        val.remove('_text');
       }
-      saveTo[key] = value;
-      // return saveTo.putIfAbsent(key, () => value);
+      saveTo[key] = val;
+      if (saveTo[key] is Map && !saveTo[key]!.containsKey('type')) {
+        saveTo[key]!['type'] = 'Object';
+      }
     });
   }
   // trace("Cleaned value::", cleanedValue);
